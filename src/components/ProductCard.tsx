@@ -15,7 +15,7 @@ const ProductCard: React.FC<Props> = (props) => {
   return (
     <div
       key={props.id}
-      className="md:w-4/12 p-2 md:inline-block w-full self-start
+      className="lg:w-4/12 md:w-6/12 p-2 md:inline-block w-full self-start
             "
     >
       <div className="bg-gray-100 p-4">

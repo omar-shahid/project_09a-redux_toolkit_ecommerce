@@ -2,21 +2,32 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import classnames from "classnames";
 import QuantitySelector from "./QuantitySelector";
-import { cartSlice, itemsSelector } from "../features/cartSlice";
+import {
+  cartSlice,
+  itemsSelector,
+  totalPriceSelector,
+} from "../features/cartSlice";
 
 interface Props {
   isHidden: boolean;
   closeFunc: () => void;
+  onCheckoutClick: () => void;
 }
 
 const CartSide: React.FC<Props> = (props) => {
-  const products = useSelector(itemsSelector);
+  const cartItems = useSelector(itemsSelector);
+  const totalPrice = useSelector(totalPriceSelector);
 
   const dispatch = useDispatch();
 
   const classes = classnames(
     "h-screen w-screen fixed z-50 top-0 left-0 bg-black bg-opacity-70",
     { hidden: props.isHidden }
+  );
+
+  const checkoutBtnClasses = classnames(
+    "md:w-4/12 w-full block my-4 rounded mx-auto py-3 bg-yellow-600 text-white",
+    { "opacity-60 cursor-not-allowed": !!!cartItems.length }
   );
 
   const handleAddQuantity = (id: number) =>
@@ -26,7 +37,7 @@ const CartSide: React.FC<Props> = (props) => {
 
   return (
     <div className={classes}>
-      <div className="w-4/12 right-0 fixed bg-white h-full">
+      <div className="lg:w-4/12 md:w-5/12 w-full overflow-y-scroll right-0 fixed bg-white h-full ">
         <div className="bg-gray-700 p-4 flex justify-between">
           <h1 className="text-white text-4xl">Cart</h1>
           <div className="overflow-auto pr-4">
@@ -37,9 +48,9 @@ const CartSide: React.FC<Props> = (props) => {
           </div>
         </div>
         <div className="p-3">
-          {products.map((el) => (
+          {cartItems.map((el) => (
             <div
-              className="bg-gray-300 relative p-3 flex items-center justify-between"
+              className="bg-gray-300 mb-2 relative p-3 flex items-center justify-between"
               key={el.id}
             >
               <div className="absolute top-0 mr-3 right-0">
@@ -68,6 +79,22 @@ const CartSide: React.FC<Props> = (props) => {
               </div>
             </div>
           ))}
+          <div className="flex justify-between">
+            <h1 className="text-4xl text-gray-800 font-medium">Total</h1>
+            <h1 className="text-4xl text-gray-800 font-medium">
+              ${totalPrice}
+            </h1>
+          </div>
+          <button
+            onClick={() => {
+              props.onCheckoutClick();
+              dispatch(cartSlice.actions.clearCart());
+            }}
+            disabled={!!!cartItems.length}
+            className={checkoutBtnClasses}
+          >
+            Checkout
+          </button>
         </div>
       </div>
     </div>
