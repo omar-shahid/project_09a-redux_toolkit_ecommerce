@@ -1,13 +1,17 @@
 import React from "react";
 import { Product } from "../types";
-import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CartItem } from "../features/cartSlice";
 
 interface Props extends Product {
-  notfFunc: () => void;
+  onAdd: (p: CartItem) => void;
 }
 
 const ProductCard: React.FC<Props> = (props) => {
+  const onClick = (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const product = { ...props, quantity: 1, qtyPrice: props.price };
+    props.onAdd(product);
+  };
   return (
     <div
       key={props.id}
@@ -24,10 +28,10 @@ const ProductCard: React.FC<Props> = (props) => {
         <p>{props.description}</p>
         <button
           disabled={!props.isAvailable}
-          className={` bg-blue-500 mt-4 ml-auto p-3 text-white rounded ${
+          className={` bg-gray-700 mt-4 ml-auto p-3 text-blue-300 rounded ${
             !props.isAvailable && "opacity-50 cursor-not-allowed"
           }`}
-          onClick={props.notfFunc}
+          onClick={onClick}
         >
           Add to Cart
         </button>
